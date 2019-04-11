@@ -1,0 +1,125 @@
+\large{
+Di seguito sono riportate tutte le tecnologie utilizzate, ognuna accompagnata da una descrizione, che a volte comprender\`a anche un esempio di utilizzo e la motivazione che ha spinto ad utilizzare tale tecnologia. Oltre questo sono anche riportate tutte le metodologie applicate per poter realizzare il progetto. Tutto ci\'o che verr\`a descritto \`e stato utilizzato su una macchina con sistema operativo \textbf{Linux}. Per la precisione \`e stata scelta la distribuzione \textit{Ubuntu}(nella sua versione 16.10). Tutti i processi sono stati eseguiti su un laptop Lenovo modello G50-80 dotato di 8Gb di RAM.
+
+\section{Linguaggio e ambiente di sviluppo}
+\subsection{C++}
+Nel corso del lavoro svolto sono state adottate varie tecnologie a partire dal linguaggio di programmazione utilizzato fino alle scelte metodologiche. Per quanto riguarda la programmazione la scelta \`e ricaduta sul linguaggio \textbf{C++},
+%%inizio wikipedia
+linguaggio di programmazione orientato agli oggetti con tipizzazione statica sviluppato da Bjarne Stroustrup ai Bell Labs nel 1983 come un miglioramento del linguaggio C. Standardizzato nel 1998 fu poi successivamente sostituito dal C++11 e dopo una revisione minore avvenuta nel 2014(C++14) si \`e arrivati poi all'ultima versione dello standard pubblicata nel 2017 con il nome di \textbf{C++17}, utilizzato nella realizzazione del progetto.
+Gi\`a lo standard del 1998 consisteva di due parti: il nucleo del linguaggio e la libreria standard che include gran parte della \textbf{Standard Template Library} che sar\`a di particolare importanza ma \'e anche  possibile, usando il linking esterno, utilizzare librerie esterne.
+%%fine wikipedia
+Il motivo di tale scelta risiede nella velocit\`a computazionale di questo particolare linguaggio orientato agli oggetti. La velocit\`a computazionale \`e infatti alla base del lavoro svolto. Nel progetto originario il linguaggio utilizzato era il \textbf{Fortran} ma si \`e optato per un linguaggio pi\`u moderno ma che mantenesse lo stesso principio cardine. Fortran e C++ hanno infatti una velocit\`a computazionale molto simile a parit\`a di operazioni eseguite.Il Fortran, sviluppato a partire dal 1954 da un gruppo di lavoro guidato da John Backus, \`e stato il primo linguaggio di programmazione di alto livello della storia nonch\`e il primo ad utilizzare un compilatore.
+\subsection{IDE e tools}
+Si \`e poi passati alla scelta dell'ambiente di lavoro, trovando in \textbf{Clion} la soluzione migliore. Clion, sviluppato da \textbf{JetBrains}\textregistered, un'azienda di sviluppo software che offre una vasta gamma di prodotti per svariati linguaggi, \`e un IDE multipiattaforma per C e C++. Un IDE (acronimo di Integrated Development Environment) \`e uno strumento software che, in fase di programmazione, aiuta i programmatori nello sviluppo del codice sorgente di un programma e consiste di pi\`u componenti, da cui appunto il nome integrato. Tra le principali componenti si trovano: editor di codice sorgente, compilatore, tool di building automatico, a cui poi spesso si aggiunge un debugger.
+Si \`e optato per l'utilizzo di un tool modulare da affiancare allo sviluppo del progetto in modo da automatizzarlo ed \`e stato dunque introdotto il tool \textbf{Cmake}. CMake, nome derivato da una abbreviazione di "cross platform make", \`e uno strumento open source e multipiattaforma progettato per creare, testare e pacchettizzare software. CMake viene utilizzato per controllare il processo di compilazione del software utilizzando semplici file di configurazione indipendenti dalla piattaforma e dal compilatore e generare \textbf{makefile} automatizzando l'operazione \textit{make}. Cmake dispone di una sintassi che comprende moltissime macro da utilizzare in uno specifico file chiamato \textbf{cmakeLists.txt}, da cui poi si generer\`a il Make file e successivamente si compila il progetto.
+Si passa di seguito a mostrare un esempio di codice e delle potenzialit\`a del tool descritte anche nel \cite{CMAKE:03}. In \textbf{\figurename~\ref{fig:EsempioCmakeList}} \`e mostrato un esempio molto semplificato di come Cmake riesca in poche righe a gestire un piccolo progetto C++.
+\begin{figure}[!htb]
+\begin{center}
+	\includegraphics[width=1 \linewidth]{figure/esempiocmake}
+\end{center}
+	\caption{Esempio base di creazione file CmakeList.txt \label{fig:EsempioCmakeList}}
+\end{figure}
+
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=1.1 \linewidth]{figure/CmakelistLBM2}
+	\end{center}
+	\caption{File CmakeList del progetto \label{fig:CmakeListLBM}}
+\end{figure}
+
+Vediamo adesso come si presenta il file CmakeList della libreria.  All' esempio di base sono stati aggiunti e utilizzati diversi comandi tra i quali \textbf{\textit{find package}} e il comando \textbf{\textit{file}} i quali impieghi saranno spiegati di seguito.
+\textbf{find\_package} viene utilizzato per poter trovare e rendere quindi utilizzabile la libreria esterna di cui si \`e fatto uso (e che verr\`a introdotta tra poco).
+\textbf{file} \`e stato invece introdotto nel CmakeList per poter unire pi\`u file in modo da avere quindi un codice pi\`u chiaro e facilmente modificabile.
+Il file CmakeLists.txt come mostrato in \textbf{\figurename~\ref{fig:CmakeListLBM}} si conclude poi con i due comandi che hanno l'impiego rispettiamente di creazione dell'eseguibile, a cui vengono assegnati nome e file compresi, e il linkaggio di librerie esterne, a cui sono i richiesti come parametri il nome dell'eseguibile e lo "shared object" ovvero il file di libreria compilato che nel sistema operativo linux ha estensione .so, simile ai file DLL di Windows.  
+Si evince dunque l'importanza della scelta di questo particolare tool in grado di offrire una gestione del progetto ottimale con un linguaggio semplice ed ad alto livello.
+
+\section{Programmazione concorrente e parallela}
+\subsection{Introduzione}
+Sempre tenendo presente la politica di un software leggero e computazionalmente veloce \`e stata introdotta la programmazione multithreading mediante l'utilizzo della libreria Intel\textregistered \textbf{Threading Building Blocks} \cite{TBB:07} (da qui in avanti chiamata IntelTBB). La programmazione parallela \`e l'esecuzione di uno o pi\`u programmi, su pi\`u microprocessori o pi\`u core dello stesso processore, allo scopo di aumentare le prestazioni di calcolo del sistema di elaborazione ma introducendo il rischio di stallo. Un noto esempio che illustra egregiamente i problemi del controllo della concorrenza e della sincronizzazione fra processi paralleli \`e il problema dei filosofi a cena o problema dei \textbf{cinque filosofi} che verr\`a descritto di seguito a puro titolo di esempio per introdurre il concetto di concorrenza in informatica.
+\subsection{Problema dei cinque filosofi}
+Il problema dei cinque filosofi, descritto da Edsger Dijktra nel 1965 per esporre un problema riguardante appunto la sincronizzazione, li descrive seduti su una tavola rotonda. Ognuno di loro ha un piatto davanti, una forchetta sulla destra e una sulla sinistra appoggiate sul tavolo per un totale quindi di cinque forchette e cinque piatti. Immaginando la vita di un filosofo fatta da periodi alterni di pensare e mangiare e che ognuno di loro abbia bisogno di due forchette per poter mangiare ma che esse debbano essere prese una per volta, si richiede di arrivare ad una soluzione in grado di far mangiare i cinque filosofi. In altre parole \`e richiesto di sviluppare un algoritmo che impedisca lo stallo, in informatica un \textbf{deadlock}, situazione in cui due o pi\`u processi o azioni si bloccano a vicenda aspettando che uno esegua una certa azione, che pu\`o verificarsi quanto tutti e cinque i filosofi possiedono una sola forchetta, e la morte d'inedia o starvation, ovvero l'impossibilit\`a perpetua, da parte di un processo pronto all'esecuzione, di ottenere le risorse sia hardware sia software di cui necessita per essere eseguito, che pu\`o verificarsi nel caso in cui uno dei due filosofi non riesce a prendere mai entrambe le forchette.
+\subsection{Tipologie di parallelismo}
+Si possono utilizzare pi\`u tipologie di parallelismo classificate in due grandi sottocategorie: interazione dei processi e decomposizione dei problemi. Nella categoria della decomposizione dei problemi si pu\`o avere il parallelismo sui dati e  sulle attivit\`a.
+
+Il parallelismo a livello di dati, anche noto come \textbf{Data parallelism} \`e una forma di parallelismo focalizzata sulla suddivisione di un dato in pi\`u nodi in modo da operare su pi\`u parti in parallelo. Pu\`o infatti esser applicata alle regolari tipologie di strutture dati quali array, vettori e matrici.
+
+Il parallelismo a livello di attivit\`a invece, anche noto come \textbf{Task parallelism} \`e focalizzato sulla distribuzione delle attivit\`a su pi\`u processi da svolgere in parallelo. Un tipo comune e molto utilizzato di parallelismo \`e definito \textbf{Pipelining} e consiste nello spostare un singolo set di dati attraverso una serie di attivit\`a risultando quasi una combinazione tra i due tipi di parallelismo. Alla base di questo tipo di programmazione ormai ampiamente utilizzata oltre ai concetti di dati e attivit\'a si deve prender nota della definizione di thread. Un \textbf{thread di esecuzione} \`e una suddivisione di un processo in pi\`u filoni o sottoprocessi che vengono eseguiti concorrentemente da sistemi monoprocessori, multiprocessori e multicore.
+\subsection{Prestazioni}
+\`E riportato ora a puro titolo di esempio il frammento di codice in \textbf{\figurename~\ref{fig:normaVettore}} con relativo output mostrato in \textbf{\tablename~\ref{tab:threadsOutput}} in cui \`e mostrato il tempo di esecuzione di un semplice programma che calcola la norma di un vettore.
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=1 \linewidth]{figure/normavettore3}
+	\end{center}
+	\caption{Codice di esempio di programma che calcola la norma di un vettore \label{fig:normaVettore}}
+\end{figure}
+
+\begin{table}[!htb]
+	\begin{center}
+		\begin{tabular}{|p{0.3\textwidth}|p{0.12\textwidth}|p{0.3\textwidth}|}
+			\hline
+			Numero valori inseriti          &Thread utilizzati       &  tempi di esecuzione     \\
+			\hline
+			2000            & 1            	&	7,75* 10\^-5 s	\\
+			2000                & 4            	&	7,75* 10\^-5 s	\\
+			\hline
+			4000            & 1     	   	&  0.00013 s     \\
+			4000		        & 4     	   	&  0.0001  s     \\
+			\hline
+			6000          	& 1     		&   0.00026 s   \\
+			6000	            & 4             &   0.00021 s   \\
+			\hline
+			10000          	& 1     		&   0.00040 s   \\
+			10000				& 4             &   0.00033 s   \\
+			\hline
+			20000          	& 1     		&   0.00061 s   \\
+			20000				& 4             &   0.00052 s   \\
+			\hline
+		\end{tabular}
+		\caption{output dei tempi per calcolo norma di un vettore \label{tab:threadsOutput}}
+	\end{center}
+\end{table}
+Parlando di prestazioni per\`o si devono introdurre il concetto di scalabilit\`a e la legge di Amdahl.
+La scalabilit\`a di un programma in ambito di programmazione parallela \`e la misura dello Speedup in rapporto alla quantit\'a di core e thread nel processo. Speedup \`e il rapporto tra il tempo necessario ad eseguire un programma senza parallelismo rispetto al tempo in cui viene eseguito in parallelo. A puro titolo di esempio uno Speedup 2X indica che il programma parallelo verr\`a eseguito impiegando la met\`a del tempo dello stesso processo lanciato in sequenziale.
+La \textbf{legge di Amdahl} invece, ideata nel 1967 da Gene Amdahl, progettista noto per le sue osservazioni sul miglioramento massimo di un sistema informatico, afferma che il miglioramento che si pu\`o ottenere su una certa parte del sistema \`e limitato dalla frazione di tempo in cui tale attivit\`a ha luogo. Questo denota anche che se accelerassimo tutto in un programma di 2X, potremmo aspettarci che il programma risultante funzioni due volte pi\`u velocemente. Tuttavia, migliorando le prestazioni di solo met\`a del programma di 2X, il sistema complessivo migliora solo di 1,33X. In formule la legge di Amdahl si pu\`o esprimere come:\\
+$$  {\frac {1}{(1-P)+{\frac {P}{S}}}}  $$ 
+con S fattore di quanto si riduce il tempo di calcolo dopo l'aggiunta del miglioramento( ad esempio se il miglioramento raddoppia la velocit\`a della porzione modificata allora S varr\`a 2) e con P proporzione tra la percentuale a cui \'e applicato il miglioramento e l'intero programma.
+La legge denota anche che al crescere del numero di processori che lavorano in parallelo l'incremento di prestazioni diventa sempre minore dato che la componente non parallelizzabile dei programmi diventa sempre pi\`u significativa nei tempi di calcolo totali.
+\section{Programmazione generica}
+Si \`e scelto di applicare al progetto una metodologia di programmazione detta \textbf{programmazione generica} (Generics programming) in quanto ritenuta la pi\`u consona per assicurare efficienza e flessibilit\`a al progetto. La programmazione generica riguarda la generalizzazione dei componenti software in modo che possano essere facilmente riutilizzati in un' ampia variet\`a di situazioni. In particolare la programmazione generica \`e stata introdotta mediante l'utilizzo dei \textbf{templates} e delle nozioni raccolte nel libro "Modern C++ Design: Generic Programming and Design Patterns Applied"\cite{GP:01}
+I templates di classi e metodi sono meccanismi particolarmente efficaci per la programmazione generica perch\`e rendono possibile la generalizzazione senza sacrificare l'efficienza. La programmazione generica mediante l'utilizzo dei template \`e stata inserita poich\`e, nonostante C++ sia un linguaggio fortemente tipizzato in cui quindi tutte le variabili devono avere un tipo specifico, le funzioni sono spesso identiche indipendentemente dal tipo di dati.
+Si passa di seguito a mostrare un esempio di utilizzo della programmazione generica e di come essa sia implementata nel linguaggio C++ attraverso la (\textbf{\figurename~\ref{fig:classeTemplateEsempio}}) e la (\textbf{\figurename~\ref{fig:metodoTemplateEsempio}}) in cui sono  mostrati rispettivamente le definizioni di base di una classe per una struttura \textit{Coda} e di un metodo per l'inserimento di un elemento della coda (templetizzati). Inoltre l'introduzione della programmazione generica evita anche di avere la ripetizione di codice e quindi aumenta il riutilizzo e l'affidabilit\`a dello stesso,favorendo insieme all'ereditariet\`a l'introduzione del \textbf{polimorfismo} che sia esso per esclusione (tramite l'ereditariet\`a) o parametrico (tramite la programmazione generica)
+
+\begin{figure}[!htb]
+	\begin{minipage}[c]{.40\textwidth}
+		\vspace{0.3 cm}
+		\includegraphics[width=1.2 \linewidth]{figure/classeTemplateEsempio2}
+		\caption{esempio di una classe template \label{fig:classeTemplateEsempio}}
+	\end{minipage}
+	\hspace{1.2 cm}	
+	\begin{minipage}{.40\textwidth}
+		\includegraphics[width=1.2 \linewidth]{figure/metodoTemplateEsempio}
+		\caption{esempio di  un metodo template \label{fig:metodoTemplateEsempio}}
+	\end{minipage}
+\end{figure}
+\vspace{1 cm}
+
+Anche nel lavoro svolto \`e stato fatto un largo utilizzo della programmazione generica soprattutto per poter implementare le celle di cui \`e composto il reticolo discreto di interesse. Come si vede nella (\textbf{\figurename~\ref{fig:introduzioneClasseCellTraits2}}) nella classe cell\_traits oltre a renderla templetizzata sono state aggiunte piccole accortezze per un utilizzo pi\`u chiaro delle variabili \textit{value\_type} e \textit{storage\_type} oltre ai metodi base che ritornano la dimensione e le velocit\`a della cella, le quali ovviamente una volta stabilite dall' utilizzatore sono fisse.
+
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=1\linewidth]{figure/introduzioneClasseCellTraits}
+	\end{center}
+	\caption{Codice della classe cell\_traits  \label{fig:introduzioneClasseCellTraits2}}
+\end{figure}
+
+\section{Scelta della struttura dati}
+Anche nel lavoro svolto la scelta delle strutture dati da utilizzare \`e ricaduta sugli \textit{vector<>} della C++ Standard Library.
+Come espresso anche nel libro "C++ Linguaggio, libreria standard, principi di programmazione" \cite{C:2000} gli elementi di un vettore sono memorizzati in modo contiguo e con un utilizzo limitato della memoria. A differenza di altri contenitori STL, come deques e liste, i vettori consentono all'utente anche di indicare una capacit\`a iniziale per il contenitore e,inoltre, permettono l'accesso casuale.
+Importante \`e la gestione e l'utilizzo della memoria stack e heap della macchina. I vettori vengono creati nella memoria stack ma gli oggetti di cui \`e composto vengono inseriti nell'heap. Al contrario, strutture come ad esempio gli Array inseriscono gli elementi direttamente nello stack.
+
+Come espresso anche in "Operating Systems: Internals and Design Principles"\cite{SO:14} uno \textbf{stack} \`e un'area di memoria del computer con un'origine fissa e una dimensione variabile. Inizialmente la dimensione della pila \`e zero. Un puntatore dello stack, solitamente sotto forma di un registro hardware, punta alla posizione di riferimento pi\`u recente nello stack; quando lo stack ha una dimensione pari a zero, il puntatore dello stack punta all'origine dello stack. Si fa presente inoltre che nel caso di pi\'u thread ognuno di essi possieder\`a un suo stack personale.
+
+L'\textbf{heap }\`e la memoria riservata per l'allocazione dinamica. A differenza dello stack, non esiste un modello forzato per l'allocazione e la deallocazione dei blocchi dall'heap. Ci\`o rende molto pi\`u complesso tenere traccia di quali parti dell'heap siano allocate o libere in un dato momento; esistono molti allocatori di heap personalizzati disponibili per ottimizzare le prestazioni dell'heap per diversi modelli di utilizzo.
+Infine al contrario dello stack, nel caso di utilizzo di pi`u thread di esecuzione questi condivideranno comunque lo stesso heap.
+}
+

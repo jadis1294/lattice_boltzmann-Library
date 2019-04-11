@@ -1,0 +1,73 @@
+\large
+Di seguito saranno viste le varie possibilit\'a prese in considerazione e non ancora implementate. L'idea di base \`e quindi quella di estendere non le funzionalit\`a ma le tipologie di implementazioni, tramite l'utilizzo di strutture dati diverse, in modo da avere come obiettivo finale quello di poter dare all'utente utilizzatore la possibilit\`a di scegliere l'implementazione desiderata.
+\section{Quadtree e Octree}
+\subsection{Definizione delle strutture}
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=0.35\linewidth]{figure/quadtree2}
+	\end{center}
+	\caption{Rappresentazione struttura Quadtree \label{fig:quadtreeAlbero}}
+\end{figure}
+Un \textbf{Quadtree}, anche detto albero quadramentale, \`e una struttura dati ad albero in cui ogni nodo interno ha esattamente quattro figli, come mostrato in \figurename~\ref{fig:quadtreeAlbero}.Questa implementazione in particolare \`e molto utilizzata in computer grafica poich\`e in uno spazio a due dimensioni, presa una determinata area, un nodo ne rappresenta un riquadro di delimitazione che copre una parte dello spazio che viene indicizzato. La radice dell'albero ovvero quel nodo privo di arco entrante pu\`o esser visto come la rappresentazione dell'intera area. Identificando uno spazio a due dimensioni con l'albero quadramentale di esempio mostrato in figura \figurename~\ref{fig:quadtreeAlbero} si otterr\`a la suddivisione mostrata in \figurename~\ref{fig:quadtreeSpazio}. Il fondamento alla base dell'assegnazione dell'intera area alla radice dell'albero trova spiegazione nel fatto che un albero senza radice non pu\`o essere acceduto risultando quindi inutilizzabile.
+Quando si lavora invece su spazi a tre dimensioni vengono utilizzati gli \textbf{Octree}, anche chiamati alberi ottali, su cui valgono gli stessi principi detti prima per gli alberi quadramentali con la differenza che ogni nodo ha esattamente otto figli, dividendo cos\`i lo spazio sui tre assi (x, y, z). Implementando anche questa struttura dati l'utilizzatore pu\`o dunque creare il reticolo discreto intero come la radice dell'albero (che sia Quadtree oppure Octree) andando poi a vedere ogni cella come una foglia dell'albero.
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=0.5 \linewidth]{figure/quadtreeSpazio}
+	\end{center}
+	\caption{Divisione dello spazio mediante Quadtree \label{fig:quadtreeSpazio}}
+\end{figure}\hfill
+\subsection{Teoremi stipulati sulle strutture}
+Sar\`a ora descritta la funzione $O (f(x))$ utilizzata per i successivi due teoremi.
+La notazione matematica O-grande \`e utilizzata per descrivere il comportamento asintotico delle funzioni. Il suo obiettivo \`e quello di caratterizzare il comportamento di una funzione per argomenti elevati in modo semplice ma rigoroso, al fine di poter confrontare il comportamento di pi\`u funzioni fra loro. Pi\`u precisamente, \`e usata per descrivere un limite asintotico superiore per la magnitudine di una funzione rispetto ad un'altra, che solitamente ha una forma pi\`u semplice. Ha due aree principali di applicazione: in matematica, dove \`e solitamente usata per caratterizzare il resto del troncamento di una serie infinita, in particolare di una serie asintotica ed in informatica dove risulta utile all'analisi della complessit\`a degli algoritmi. 
+Importanti i teoremi stipulati sugli alberi quadramentali secondo cui: la profondit\`a di un Quadtree per un set P di punti nel piano \`e al massimo uguale a\\
+$$log (s / c) + 3/2$$\\
+dove $c$ \`e la distanza minima tra due punti qualsiasi in P e s \`e la lunghezza laterale del quadrato iniziale che contiene P.
+Inoltre un quadtree di profondit\`a d che memorizza un insieme di n punti ha un numero di nodi e un tempo di costruzione entrambi pari a\\
+$$ O ((d + 1) n)$$\\
+
+Data poi la definizione di albero bilanciato come albero in cui due nodi vicini differiscono al massimo di uno in profondit\`a questa pu\`o essere applicata per bilanciare l'albero dell'esempio in \figurename~\ref{fig:quadtreeAlbero} cos\`i come mostrato in \figurename~\ref{fig:quadtreebilanciamento}\\
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=1 \linewidth]{figure/bilanciamentoquadtree}
+	\end{center}
+	\caption{Bilanciamento di un Quadtree \label{fig:quadtreebilanciamento}}
+\end{figure}\hfill
+
+\subsection{Inserimento particelle}
+Dopo la creazione si passa all'inzializzazione e in questa fase si nota il punto di forza di questa struttura dati in quanto si possono assegnare con precisione le particelle nel punto dello spazio desiderato. 
+Il rilevamento delle collisioni \`e una parte essenziale della computer grafica applicata alla fluidodinamica e rappresenta una delle operazioni pi\`u dispendiose. Per evitare queste operazioni, all'aumentare degli oggetti, per non farli collidere in un unico nodo, questo si divider\`a per assegnare ad ogni particella la propria foglia come mostrato in \textbf{\figurename~\ref{fig:aumentoPunti}}. Da questo si notano anche che le collisioni possibili sono molto ridotte in quanto una particella in uno specifico nodo non entrer\`a in collisione con un'altra appartenente ad un nodo di un'altro semipiano di profondi\`a minore.
+
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=1 \linewidth]{figure/aumentoPunti}
+	\end{center}
+	\caption{Divisione in relazione all'aumento dei punti \label{fig:aumentoPunti}}
+\end{figure}\hfill
+
+\section{Griglie a infittimento e autoadattive}
+Il metodo Lattice Boltzmann utilizza come visto griglie cartesiane che nell'attuale lavoro svolto si potrebbero definire statiche. Implementando il reticolo con la struttura dati a quadtree della sezione precedente si risolverebbe questo problema potendo infatti \textbf{infittire} le zone di interesse per poter analizzare la posizione delle particelle o del solido inserito in maniera pi\`u accurata. Volendo infittire invece la griglia cartesiana di riferimento si andrebbe per\`o ad influire negativamente sulle prestazioni ma una griglia pi\`u veloce a livello computazionale sarebb\`e per`o inaccurata. La soluzione ottima si ha nell'introduzione di una griglia a infittimento che aumenta l'accuratezza solo ed esclusivamente nelle zone di interessa come mostrato in \figurename~\ref{fig:infittimento}.
+%inserire figura
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=0.4 \linewidth]{figure/infittimento}
+	\end{center}
+	\caption{reticolo discreto con griglia a infittimento \label{fig:infittimento}}
+\end{figure}\hfill
+
+Esistono due tipologie di griglie a infittimento: a priori ed autoadattive. Nelle seconde si nota che, oltre ad avere un infittimento nelle aree del reticolo discreto pi\`u soggette alla presenza di particelle, adattano automaticamente l'infittimento nelle zone pi\`u soggette ad avere densit\`a maggiore.
+
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=1 \linewidth]{figure/autoadattivo}
+	\end{center}
+	\caption{illustrazione griglia a infittimento a priori e autoadattive\label{fig:autoadattivo}}
+\end{figure}\hfill
+\section{Esempi di utilizzo}
+In questo paragrafo vedremo un esempio di utilizzo incentrato sul vettore di \textit{storage}, sul suo stato pre iterazione e la sua variazione post iterazione. Come gi\`a detto infatti utilizzando l'algoritmo LBM si conserva, cos\`i come la quantit\`a di moto, anche la massa ma, dopo l'alternanza delle fasi di stream e collision, risulter\`a cambiata la sua distribuzione e quella delle velocit\`a. Per l'esempio che mostreremo \`e stato creato un reticolo discreto a due dimensioni in cui gran parte delle particelle si trovano nella parte in alto a sinistra della griglia. Per la rappresentazione verr\`a utilizzata la funzione descritta nel paragrafo 4.6 per salvare un BMP dello stato pre e post varie iterazioni. In \textbf{\figurename~\ref{fig:esempiobmp}} sono mostrate le immabini bitmap memorizzate in memoria che identificano le situazioni antecedenti e successive all'iterazione.
+
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=1 \linewidth]{figure/esempiobmp}
+	\end{center}
+	\caption{illustrazione immagini bmp pre e post iterazione \label{fig:esempiobmp}}
+\end{figure}\hfill

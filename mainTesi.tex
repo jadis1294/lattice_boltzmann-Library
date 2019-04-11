@@ -1,0 +1,123 @@
+% Classe appositamente creata per tesi di Ingegneria Informatica all'università Roma Tre
+\documentclass[12pt]{TesiDiaUniroma3}
+% --- INIZIO dati relativi al template TesiDiaUniroma3
+% dati obbligatori, necessari al frontespizio
+\titolo{Implementazione di una libreria per metodo Lattice Boltzmann}
+\autore{Luca De Silvestris}
+\matricola{486652}
+\relatore{Prof. Franco Milicchio}
+\correlatore{Prof. Nome Cognome} % modifica anche TesiDiaUniroma3.cls se vuoi avere un correlatore
+\annoAccademico{2016/2017}
+
+% dati opzionali
+\dedica{Ai miei genitori} % solo se nel documento si usa il comando \generaDedica
+% --- FINE dati relativi al template TesiDiaUniroma3
+
+% --- INIZIO richiamo di pacchetti di utilità. Questi sono un esempio e non sono strettamente necessari al modello per la tesi.
+%\usepackage[plainpages=false]{hyperref}	% generazione di collegamenti ipertestuali su indice e riferimenti
+%\usepackage[all]{hypcap} % per far si che i link ipertestuali alle immagini puntino all'inizio delle stesse e non alla didascalia sottostante
+\usepackage{amsthm}	% per definizioni e teoremi
+\usepackage{amsmath}	% per ``cases'' environment
+\usepackage{tikz}
+\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+\usetikzlibrary{arrows, calc, chains, positioning}
+\tikzset
+{
+	% nodes
+	darkstyle/.style =
+	{
+		circle,draw,fill = black!20
+	},
+	% trajectory
+	serpent/.style =
+	{
+		line join  = round,
+		line width = 2pt,
+		line cap   = round,
+		opacity    = .7,
+		red
+	},
+	>=stealth',
+	core/.style = 
+	{
+		rectangle,
+		rounded corners,
+		draw           = black, thick,
+		text width     = 5em, 
+		minimum height = 3em,
+		align=center,
+		on chain
+	},
+	cache/.style = 
+	{
+		core,
+		draw = gray
+	},
+	line/.style =
+	{
+		draw, thick, <-
+	},
+	element/.style =
+	{
+		tape,
+		top color      = black,
+		bottom color   = blue!50!black!60!,
+		minimum width  = 8em,
+		draw           = blue!40!black!90, very thick,
+		text width     = 10em, 
+		minimum height = 3.5em, 
+		text centered, 
+		on chain
+	},
+	every join/.style =
+	{
+		->, thick,shorten >=1pt
+	},
+	%    decoration = 
+	%    {
+	%        brace
+	%    },
+	tuborg/.style = 
+	{
+		decorate
+	},
+	tubnode/.style = 
+	{
+		midway, right = 2pt
+	},
+}
+
+\newcommand{\ie}{\emph{i.e.}}
+
+% --- FINE riachiamo di pacchetti di utilità
+
+\begin{document}
+% ----- Pagine di fronespizio, numerate in romano (i,ii,iii,iv...) (obbligatorio)
+\frontmatter
+\generaFrontespizio
+\generaDedica
+\generaIndice
+\generaIndiceFigure
+\generaIndiceTabelle
+\introduzione{introduzione}		% inserisce l'introduzione e la prende in questo caso da introduzione.tex
+
+
+% ----- Pagine di tesi, numerate in arabo (1,2,3,4,...) (obbligatorio)
+\mainmatter
+% il comando ``capitolo'' ha come parametri:
+% 1) il titolo del capitolo
+% 2) il nome del file tex (senza estensione) che contiene il capitolo. Tale nome \`e usato anche come label del capitolo
+\capitolo{Stato dell'arte}{Capitolo1}
+\capitolo{Tecnologie e metodologie}{Capitolo2}
+\capitolo{Analisi e problemi}{Capitolo3}
+\capitolo{Progettazione e implementazione}{Capitolo4}
+\capitolo{Esempi di utilizzo e possibili sviluppi}{Capitolo5}
+% ----- Parte finale della tesi (obbligatorio)
+\backmatter
+\conclusioni{conclusioni}
+
+% Bibliografia con BibTeX (obbligatoria)
+% Non si deve specificare lo stile della bibliografia
+\bibliography{bibliografia} % inserisce la bibliografia e la prende in questo caso da bibliografia.bib
+
+\end{document}

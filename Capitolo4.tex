@@ -1,0 +1,180 @@
+\large {
+In questo capitolo sara\`a illustrato il risultato del lavoro di progettazione e implementazione svolto fino al termine del tirocinio; i problemi individuati nel capitolo 3 sono stati qui risolti utilizzando le tecnologie e le metodologie illustrate nel capitolo 2 partendo dalla costruzione del reticolo discreto (Lattice). Si proceder\`a a descrivere la libreria partendo dalle prime operazioni svolte dall'utente.
+
+\section{Implementazione del reticolo discreto}
+Al fine di realizzare un software utilizzabile in pi\`u situazioni l'utente utilizzatore ha la possibilit\`a di indicare il numero di dimensioni su cui si andr\`a a lavorare, ovvero se utilizzare la libreria su uno, due oppure su tre assi e di specificare il numero di direzioni o velocit\`a da assegnare ad ogni particella. Questa creazione del reticolo \`e possibile utilizzando la classe delle celle templetizzata \\
+    \textit{template} <std::size\_t dim, std::size\_t dis, class Index, Index const (*v)[dis][dim], class T = double> \textbf{class lb\_cell}\\
+in cui \textit{dim} specifica la dimensione, \textit{dis} il numero delle velocit\`a e \textit{const (*v)[dis][dim]} specifica la loro distribuzione nello spazio cos\`i come visto nel paragrafo 1.2.2 in cui si sono trattate le tipologie di reticoli discreti pi\`u utilizzati e la classificazione \textit{DnQm}.
+
+Considerato poi il grande utilizzo delle classificazioni D2Q9 e D3Q27 si \`e provveduto ad implementare questi due specifici reticoli discreti distribuendo le velocit\`a nel caso del D2Q9 nel modo illustrato di seguito: 
+\begin{center}
+		\centering
+	static const int \textbf{D2Q9\_lattice[9][2]}\{ \\
+		\{ +0, +0 \},     // center d0 \\
+		\{ +0, +1 \},     // north d1 \\
+		\{ +1, +1 \},     // north-east d2\\
+		\{ +1, +0 \},     // east d3\\
+		\{ +1, -1 \},     // south-east d4\\
+		\{  0, -1 \},      // south d5\\
+		\{ -1, -1 \},     // south-west d6\\
+		\{ -1,  0 \},     // west d7\\
+		\{ -1, +1 \}      // south-east d8\\
+	Distribuzione delle velocit\`a per reticolo discreto D2Q9
+\end{center}
+\vspace{0.5 cm}
+Utilizzando la funzione \textbf{Using} del linguaggio, che consente la dichiarazione di un tipo e l'utilizzo di un alias che prende le specifiche indicate:
+\begin{center}
+	\centering
+    using \textbf{D2Q9}  = lb\_cell<2,  9, int, \textbf{\&D2Q9\_lattice},  double>;
+\end{center}
+si \`e poi facilitata l'assegnazione dei valori della classe generica nel caso delle classificazioni sopra citate per una assegnazione quanto pi\`u immediata possibile. Da notare infatti che utilizzando l'alias D2Q9 si costruisce il reticolo utilizzando la distribuzione mostrata sopra. Si ricorda inoltre che nel linguaggio di programmazione C++ la \& restituisce l' indirizzo di memoria dell' operando cui \`e applicato.
+
+\section{Creazione dello spazio discreto}
+Una volta deciso il tipo di reticolo discreto da utilizzare si passa alla costruzione e alla creazione e all'inizializzazione dei vari contenitori o \textit{storage}(nome utilizzato nella libreria).
+
+La creazione avviene mediante un costruttore a cui vengono passati in input la dimensione degli assi su cui verr\`a creato il reticolo. A puro titolo di esempio se si stesse utilizzando un sistema a due dimensioni, inserendo in input i valori \{3,3\}  in cui il primo valore rappresenta la dimensione desiderata dell'asse \textit{X} e il secondo valore l'asse delle \textit{Y} il reticolo discreto verrebbe costruito come in \textbf{\figurename~\ref{fig:discreto}} 
+
+\vspace{1 cm}
+\begin{figure}[!htb]
+	\centering
+	\begin{tikzpicture}[darkstyle,scale=1]
+	\draw[line width=0.2mm, black, fill=cyan!20, dotted] 
+	(0.5,0.5)--(2.5,0.5)--(2.5,2.5)--(0.5,2.5)--(0.5,0.5);
+	\draw [serpent, ->,black]
+	 (0, 0)--(0, 3);
+	\draw [serpent, ->,black] 
+	(0, 0)--(3, 0);
+	\end{tikzpicture}
+	\caption{spazio discreto \label{fig:discreto}}
+\end{figure}\hfill
+
+\`E stato inoltre implementato un sistema che attua la strategia del controllo incrociato, riportando un messaggio di errore nel momento in cui si prova ad inserire valori per pi\`u o meno assi cartesiani di quelli su cui si \`e scelto di lavorare, in modo tale da evitare un utilizzo non desiderato.
+Utilizzato il costruttore il risultato sar\`a la creazione dello "spazio di lavoro" che risulter\`a per\`o vuoto; l'utente pu\`o ora passare alla fase di inizializzazione.
+
+\section{Inizializzazione degli Storage}
+L'inizializzazione avviene invocando l'apposito metodo in cui si ha la possibilit\`a di inserire:le \textbf{direzioni}, ovvero le velocit\`a e che costituiranno le nostre particelle; lo \textbf{stato} della cella, in cui si specifica lo stato fisico della materia di cui \`e composta la cella; la massa dei punti.
+
+Per l'implementazione come si \`e detto nel \textbf{Capitolo 2}, in cui si sono trattati gli strumenti e le metodologie applicate, si \`e optato per l'utilizzo degli \textit{STD::VECTOR<>} generalizzando il tipo di dati. Utilizzando la funzione \textbf{typedef} del linguaggio i vari vettori sono definiti come
+\begin{center}
+	\textit{typedef} std::vector<value\_type> \textbf{storage\_type}\\
+\end{center}
+avendo dunque la generalizzazione sul tipo di dato utilizzato di modo da poter avere una sola definizione di "storage" e render il codice pi\`u pulito. Nella libreria i vari vector sopracitati sono denominati rispettivamente: \textit{Storage}, \textit{state\_points} e \textit{mass\_of\_points}, tutti del tipo \textit{storage\_type} visto prima.
+\vspace{1 cm}
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=0.5 \linewidth]{figure/Storage}
+	\end{center}
+	\caption{vettore Storage per modello D2Q9 \label{fig:Storage2}}
+\end{figure}
+La struttura pi\`u "complessa" \`e quella dello \textbf{storage} in cui sono inserite le particelle e le rispettive velocit\`a in un unico \textit{vector} secondo lo schema riportato in \textbf{\figurename~\ref{fig:Storage2}}
+
+Come si vede in figura \`e stata utilizzata una rappresentazione del D2Q9 e si nota che  ogni particella pu\`o ed \`e espressa in relazione alle sue velocit\`a e dalla posizione nel vettore. Questo ci ha permesso di ottimizzare lo spazio di indirizzamento della distribuzione cosa che non sarebbe potuta accadere se si fosse optato per l'utilizzo degli Array in quanto quella scelta particolare sarebbe andato a incidere sull'eccessivo utilizzo dello stack.
+
+Per poter inizializzare lo spazio di lavoro creato bisogna dunque specificare i valori della distribuzione inserendo in input: un vector con le velocit\`a che verr\`a inizializzato come detto sopra, un vector per specificare le celle di stato solido e uno per le masse delle varie parcelle. Il vettore con le informazioni sullo stato \`e fondamentale in quanto il metodo Lattice Boltzmann e tutta fluidodinamica si comporta diversamente al variare dello stato fisico della cella. Incontrando una cella solida ad esempio si potrebbe infatti avere un urto che porterebbe ad una variazione del verso della velocit\`a. Dal vettore degli stati passato in input durante l'inizializzazione, si costruisce anche il vettore 
+\begin{center}
+	\textit{storage\_type \textbf{boundaries\_points}}\\
+\end{center}
+che, mediante l'utilizzo di valori booleani, d\`a conoscenza delle celle di bordo del nostro spazio di riferimento etichettando con valore uno (\textit{true}) la cella che fa parte del bordo. 
+%%SECONDA FIGURA FRANCESCO 
+In \textbf{\figurename~\ref{fig:axes}} \`e mostrato un esempio in cui, sempre per un caso a due dimensioni, vengono inizializzate anche le celle di bordo. Si nota come le particelle siano inserite nello Storage a partire da quella con Y maggiore e X minore fino ad arrivare a quella con Y minore e X maggiore.
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=0.8 \linewidth]{figure/axes}
+	\end{center}
+	\caption{vettore Storage per modello D2Q9 \label{fig:axes}}
+\end{figure}\hfill
+
+Questa inizializzazione del vettore boundaries\_points \`e operata mediante l'utilizzo di due metodi: \textit{check\_solid\_bound} e \textit{check\_boundaries\_point}.\\
+\textbf{check\_solid\_bound} prendendo in input un intero, ovvero l'indice dello storage da analizzare, restituisce in output un booleano true nel caso in cui la cella con indice in ingresso \`e bordo di una cella solida.\\
+\textbf{check\_boundaries\_point} utilizzato per restituire il bordo perimetrale del reticolo discreto.\\
+Di seguito, in \figurename~\ref{fig:esempioInit}  \`e riportato un esempio concreto di inizializzazione di un reticolo discreto in cui sono evidenziate: le celle di stato fisico solido, le celle di fluido inserito e quelle di bordo. Infine viene inizializzato anche un vettore \textit{storage\_type axes} di interi, di supporto per l'utilizzo di metodi che da un indice ritornano le coordinate del punto e viceversa, che ha dimensione pari al numero di assi su cui si estende il reticolo discreto e i cui valori ne specificano la grandezza degli stessi.
+
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=1 \linewidth]{figure/esempioInit}
+	\end{center}
+	\caption{esempio completo di reticolo discreto \label{fig:esempioInit}}
+\end{figure}\hfill
+
+\section{Iterazione}
+Una volta inizializzato il reticolo discreto l'utente pu\`o eseguire le iterazioni. Queste come visto sono strutturate in due step, o fasi compiute in intervalli di tempo separati: Stream e Collision, che adesso saranno mostrate pi\`u in dettaglio.
+\subsection{Stream}
+$$f_{i}({\vec {x}}+{\vec {e}}_{i}\delta _{t},t+\delta _{t})=f_{i}^{t}({\vec {x}},t+\delta _{t}) $$
+Nella prima fase si avr\`a lo \textbf{Stream} in cui ci sar\`a la propagazione delle particelle, che si muoveranno nelle varie celle del reticolo discreto secondo le distribuzioni di velocit\`a definite in precedenza, come mostrato in \figurename~\ref{fig:Streaming} per una distribuzione D2Q9%% immagine presa dal sito https://cims.nyu.edu/~billbao/report930.pdf 
+%%ricordati di citarlo!!!!
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=1 \linewidth]{figure/Streaming}
+	\end{center}
+	\caption{Illustrazione fase di stream in un modello D2Q9 \label{fig:Streaming}}
+\end{figure}\hfill
+
+Ricordando la disposizione delle velocit\`a e delle particelle del vettore Storage, per poter realizzare l'effetto mostrato in figura, si passa quindi a una scansionare ogni particella e per ognuna di esse le proprie velocit\`a, vedendo quali di esse si muoveranno ed in quale direzione. Dato che le particelle saranno anche collegate alla loro massa ed avendo visto che utilizzando LBM si conserva la quantit\`a di moto, ad ogni iterazione la massa totale sar\`a conservata ma la distribuzione risulter\`a variata.
+\subsection{Condizioni di bordo e di angolo}
+Come solo accennato in precedenza parlando di scelte e metodologie applicate al progetto svolto, nel Capitolo 2, si sono lasciate le condizioni di bordo a scelta dell'utente. Sono state infatti implementate semplici condizioni di default, come necessit\`a per poter passare alla seconda fase, che simulassero \textbf{l'uscita della particella} da reticolo andando quindi a sostituire quella particolare velocit\`a con un valore nullo come mostrato in \figurename~\ref{fig:bordoDefault}. L'utilizzatore ha la possibilit\`a di sostituire questa condizione riscrivendo il metodo \textit{Boundaries\_conditions} e implementando quella pi\`u consona al proprio modello. Esistono vari tipi di condizioni di bordo tra le quali spiccano:inflow, outflow, no-slip, free-slip e la bounce-back. \`E riportato un esempio di condizioni al contorno testate in precedenza in cui il reticolo possiede un bordo fisso e solido che a contatto le particelle mosse nella fase di Stream provocher\`a loro un urto e un conseguente cambio della direzione della velocit\`a (\textbf{bounce-back})come mostrato in \figurename~\ref{fig:bordosolido}.
+%%immagine presa da:
+%%https://cims.nyu.edu/~billbao/report930.pdf 
+%%ricordati di citarlo!!!!
+\begin{figure}[!htb]
+	\begin{minipage}{0.5\textwidth}
+		\hspace{-1.5 cm}
+				\includegraphics[width=1.2 \linewidth]{figure/bordosolido}
+			\caption{Illustrazione delle condizioni di bordo di default \label{fig:bordoDefault}}
+	\end{minipage}\hfill
+	\begin{minipage}{0.45\textwidth}
+				\centering
+				\includegraphics[width=1.2 \linewidth]{figure/bordosolido}\\
+			\caption{Illustrazione delle condizioni di bordo solido \label{fig:bordosolido}}
+	\end{minipage}
+\end{figure}\hfill
+Inoltre, come con le condizioni da attuare ai bordi del reticolo discreto, si \`e lasciata all'utente la possibilit\`a di avere delle condizioni sugli angoli della griglia diverse da quelle di bordo, creando un metodo \textit{"corners\_condition"} in cui sono state inserite come condizioni di default le stesse implementate per quelle di bordo.
+\subsection{Collisione}
+
+$$ f_{i}^{t}({\vec {x}},t+\delta _{t})=f_{i}({\vec {x}},t)+{\frac {1}{\tau _{f}}}(f_{i}^{eq}-f_{i})$$
+Analizzata la fase di Stream e visti alcuni esempi di condizioni al contorno si passa ora al secondo step dell'iterazione andando quindi ad analizzare la fase di \textbf{Collisione} in cui, nello stesso intervallo di tempo, ogni particella si sposter\`a sul nodo vicino, a seconda della propria direzione andando a concludere l'iterazione con il ricalcolo delle distribuzioni. Durante questa fase viene inoltre ricalcolata la funzione di distribuzione aggiornata in modo tale che l'algoritmo possa procedere con un'altra iterazione e quindi con una nuova alternanza delle due fasi, conservando localmente massa e momento. Si \`e notato che in questo step le collisioni dipendono da quanto le distribuzioni si discostano da quelle di equilibrio, indicando un rapporto stretto tra le due fasi. Considerata dunque la vicinanza tra le due fasi, sia a livello temporale che di relazione si \`e dunque utilizzata la fase di collisione quasi in concomitanza con la fase di Stream.
+
+Di seguito, in \figurename~\ref{fig:iterazione} \`e mostrato un esempio di iterazione completa, con condizioni al contorno che comprendono la risposta al bordo solido denominato "wall". L'iterazione di esempio si compone di quattro fasi: pre-stream; post-stream; collision and reversing; bounce-back.
+
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=1 \linewidth]{figure/iterazione}
+	\end{center}
+	\caption{Illustrazione iterazione completa \label{fig:iterazione}}
+\end{figure}\hfill
+
+\section{Caricare solidi}
+Per poter essere completamente aperta a qualunque tipo di utilizzo l'utente utilizzatore ha la possibilit\`a di inserire, all'interno del reticolo discreto, forme e figure solide. Per dare questa possibilit\`a \`e stata implementata la funzione \textit{void \textbf{insert\_stl}(string fname, vector<triangle> \&v} con la quale \`e possibile leggere file con estensione .stl.
+
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=1 \linewidth]{figure/filestl}
+	\end{center}
+	\caption{Illustrazione solido costruito con file .stl \label{fig:filestl}}
+\end{figure}\hfill
+
+\textbf{STL} (Acronimo di "Standard Triangulation Language" ) \`e un formato di file, binario o ASCII, nato per i software di stereolitografia CAD. \`E utilizzato nella prototipazione rapida (rapid prototyping) attraverso software CAD.
+Un file .stl rappresenta un solido la cui superficie \`e stata discretizzata in triangoli. Esso consiste delle coordinate X, Y e Z ripetute per ciascuno dei tre vertici di ciascun triangolo, con un vettore per descrivere l'orientazione della normale alla superficie. In \figurename~\ref{fig:filestl} \`e mostrato un esempio di un solido sferico costruito come file con estenzione .stl.
+Data la definizione di file con estenzione .stl per poter utilizzare la funzione \textit{insert\_stl} \`e stata creata una classe triangle a cui in input vengono assegnati tre valori, uno per ogni asse. Questi tre valori sono di tipo V3, classe con un costruttore sovraccarico che pu\`o avere in input un puntatore ad un array, con i valori sugli assi, oppure direttamente le coordinate X, Y, Z che specificheranno dove creare l'oggetto.
+Una volta caricato il file l'utente ha il compito di settare il vettore \textit{state\_points}, che durante l'inizializzazione \`e necessario anche per costruire il vettore \textbf{check\_boundaries\_point}.
+
+\section{Bitmap}
+\`E stata implementata la possibilit\`a di creare immagini e salvarle direttamente nella memoria interna del calcolatore utilizzato. In particolare si \`e optato per l'utilizzo di immagini con estensione .bmp. Un file BMP è un file bitmap, cio\`e un file di immagine grafica che immagazzina i pixel sotto forma di tabella di punti e che gestisce i colori sia in true color che attraverso una paletta indicizzata. La struttura di un file bitmap \`e la seguente: intestazione del file (in inglese file header); intestazione del bitmap (in inglese bitmap information header); paletta (opzionale); corpo dell'immagine.
+Le immagini bitmap, anche dette immagini \textbf{raster}, si contrappongono alle immagini vettoriali ed a tutta la grafica vettoriale, nella quale gli elementi vengono geometricamente ubicati nell'immagine mediante l'indicazione delle coordinate dei punti di applicazione, anzich\`e descrivendoli utilizzando una griglia di pixel. Un esempio che riporta la differenza tra le due tipologie di immagini \`e riportata in figura \figurename~\ref{fig:bitvet}.
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=0.6 \linewidth]{figure/bitvet}
+	\end{center}
+	\caption{Illustrazione iterazione completa \label{fig:bitvet}}
+\end{figure}\hfill
+
+Il formato file BMP \`e in grado di memorizzare immagini digitali bidimensionali sia monocromatiche che a colori, in varie profondit\`a di colore e, opzionalmente, con: compressione dati, canali alfa e profili colore. Nel codice \`e stata importata una libreria esterna \textit{bitmap\_image} con cui \`e stato implementato il metodo \textit{void bitmap\_image()} il quale: crea un oggetto bitmap la cui grandezza tiene conto delle dimensioni del reticolo; ne disegna le distribuzioni delle velocit\`a con una palette di colori che passa da quelli meno accesi per una densit\`a di particelle e di velocit\`a minori, fino ad arrivare a colori pi\`u accesi dove \`e presente un numero elevato di particelle e velocit\`a; salva l'immagine creata e disegnata in memoria una volta terminato il programma. 
+
+L'utente utilizzatore ha anche la possibilit\`a di analizzare, facendo molteplici iterazioni, il cambiamento nel pre e post per ogni iterazione attraverso un numero di immagini BMP quante ne sono state stampate durante l'intera esecuzione del processo.
+
+\section{Testing}
+Come detto nel paragrafo 3.1 lo sviluppo \`e stato accompagnato e guidato da test. In particolare \`e stato inserito il file \textit{Catch.hpp} distribuito sotto la licenza software Boost.
+
+\textbf{Boost} \`e un insieme di librerie per il linguaggio di programmazione C++ che fornisce supporto per attivit\`a e strutture quali algebra lineare, generazione di numeri pseudocasuali, multithreading, elaborazione di immagini, espressioni regolari e test di unit\`a. Molte di queste librerie sono rilasciate sotto Boost Software License, licenza progettata per consentire a Boost di essere utilizzato con progetti software gratuiti e proprietari.
+
+Lo sviluppo guidato dal testing dell'applicativo \`e una parte del ciclo di vita del software di fondamentale importanza, non solo per individuare le carenze di correttezza, completezza e affidabilit\`a delle componenti software in corso di sviluppo ma anche per valutare se il comportamento del software, prima della distribuzione, rispetta i requisiti. Inoltre si parla di \textbf{sviluppo guidato} in quanto i test devono accompagnare tutte le fasi dello sviluppo i modo da vedere se dopo un determinato cambiamento sia venuta meno la stabilit`a del codice. L'obiettivo dell'impiego di test \`e quello di mantenere malfunzionamenti del codice e bug, che hanno costi di debugging proporzionali al tempo di "creazione" e alla quantit\`a di rige di codice, in zone a spiccata localit\`a di modo da essere facilmente identificabili ed eliminare la \textbf{regressione}.
+}

@@ -1,0 +1,118 @@
+\large
+\section{Fluido dimanica e computer grafica}
+In computer grafica \`e di grande interesse lo studio della fluidodinamica sia per studi scientifici sia per applicazioni pratiche tra cui simulazioni, elementi videoludici ed animati. Studiando un fluido da un punto di vista macroscopico, il suo comportamento \'e determinato dalle \textbf{equazioni di Navier-Stokes }.\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%equazioni di navier stokes%%
+$$ {\partial{\bf u}\over{\partial t}} + ({\bf u} \cdot \nabla) {\bf u} = - {1\over\rho} \nabla p + \gamma\nabla^2{\bf u} + {1\over\rho}{\bf F} $$
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\\ %%nota presa da wikipedia
+In fluidodinamica le equazioni di Navier-Stokes  nel caso generale coinvolgono 5 equazioni scalari differenziali alle derivate parziali e 20 variabili descriventi il comportamento di un fluido la cui ipotesi di base \`e che questo possa essere modellato come un continuo deformabile. Esse devono il loro nome a Claude-Louis Navier e a George Gabriel Stokes che le formalizzarono e la loro soluzione analitica generale rappresenta attualmente uno dei problemi irrisolti della matematica moderna per il quale vale il premio Clay. Soluzioni analitiche particolari si hanno infatti solo in caso di utilizzo di estreme semplificazioni.
+
+Un approccio alternativo a queste simulazioni fluidodinamiche computazionali fu inventato alla fine degli anni '80 con i metodi reticolati dei gas. Questi metodi permettono alle particelle di muoversi in un reticolo discreto e che la massa e il momento siano conservati nelle collisioni locali. La grande diffusione di questi metodi \`e da accreditare alla notevole facilit\`a di implementazione rispetto all'utilizzo delle equazioni di Navier-Stokes.
+
+\section{Metodo Lattice Boltzmann}
+%%aggiungere bibliografia su boltzmann 
+Il metodo Lattice Boltzmann, spesso abbreviato con la sigla \textbf{LBM}, dal termine inglese Lattice Boltzmann method, \`e un insieme di tecniche (di CFD) usate per la simulazione dei fluidi. Invece di risolvere le equazioni di \textbf{Navier-Stokes}, l'equazione di Boltzmann viene risolta per simulare il flusso di un fluido newtoniano mediante modelli di collisione. Simulando l'interazione di un limitato numero di particelle, il comportamento del flusso viscoso emerge automaticamente dal movimento intrinseco delle particelle stesse e dai processi di collisione che ne conseguono~\cite{sb:2017}. Nel tempo si \`e riscontrato lo straordinario successo applicativo di tali metodologie in ambito vario, riuscendo anche ad eseguire simulazioni sull' equazione di Schr\"odinger.
+ 
+Il metodo Lattice Boltzmann si basa su tre pilastri fonzamentali: l'equazione di Boltzmann, lo schema a reticolo discreto detto Lattice e la distribuzione delle velocit\`a. Tutti i punti verranno spiegati di seguito per dare una idea generale delle equazioni, dell'ambiente e dell'algoritmo utilizzati nel metodo Lattice Boltzmann.
+
+\subsection{Equazione di bolzmann}
+L'equazione di Boltzmann, conosciuta anche come equazione di Boltzmann per il trasporto, deve il suo nome proprio al celebre fisico austriaco Ludwig Eduard Boltzmann ed \`e data da
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%equazione di boltzmann
+$${\displaystyle \partial _{t}f+v\partial _{x}f+F\partial _{v}f=\Omega}$$
+dove al primo membro c'\`e la derivata totale della funzione di distribuzione $f = f(x, c, t)$ mentre al secondo membro l'operatore di collisione $\Omega$.
+
+Il problema pricipale nella risoluzione dell'equazione di Boltzmann \`e dato dalla natura complicata delle collisioni. Non \`e quindi sorprendente che ne siano state proposte versioni alternative e pi\`u semplici, note come "modelli d'urto", a cui si \`e arrivati mediante approssimazioni. Quella di maggior utilizzo risulta essere di Bhatnagar, Gross e Krook (anche definita approssimazione di \textbf{BGK}), proposta nello stesso periodo anche da Walander, che linearizza l'operatore di collisione ottenendo l'equazione Boltzmann-BGK data da: 
+
+$${\partial{f}\over{\partial t}}+\vec{c} \nabla f= -{1\over{\tau}}(f-f^(eq))$$
+dove $\tau$ \`e il tempo dimensionale di rilassamento legato direttamente alla viscosit\`a ed $f^eq$ \`e la funzione di distribuzione di equilibrio.
+
+Visto che le collisioni dipendono da quanto le distribuzioni si discostano da quelle di equilibrio, l'operatore di collisione assume un significato fisico che governa il rilassamento pi\`u o meno repentino verso una condizione di equilibrio, che dipende dalla viscosit\`a del fluido in esame. 
+I metodi reticolati di Boltzmann sono utilizzati dunque come tecnica di simulazione per sistemi \textbf{fluidodinamici} complessi alla cui base c'\`e la fisica computazionale. Nei metodi tradizionali si risolvono numericamente le equazioni di conservazione di propriet\`a macroscopiche come massa, quantit\`a di moto ed energia. Nei modelli di Boltzmann invece il fluido \`e costituito da particelle fittizie, e queste operano consecutivamente processi di \textbf{propagazione e collisione}, spostandosi su una \textbf{griglia reticolare discreta} (\figurename~\ref{fig:cell1}).
+
+\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[darkstyle,scale=1]
+		\foreach \x in {0,...,3}
+		\foreach \y in {0,...,3} 
+		{
+			\node [darkstyle]  (\x, \y) at (\x, \y)
+			{ };
+		} 
+		\end{tikzpicture}
+		\caption{Esempio Griglia reticolare a due dimenioni \label{fig:cell1}}
+\end{figure}
+
+Data dunque una griglia generica si pu\`o decidere il sottospazio da utilizzare, avendo quindi libert\`a di stabilire su quante dimensioni implementare il modello e su quante direzioni si vuol simulare il movimento della particella.
+
+\subsection{Tipi di reticoli e classificazione DnQm}
+La potenza della discretizzazione dell'equazione di Boltzmann consiste nell'adozione di una griglia detta lattice. Questa griglia consta di nodi ugualmente spaziati tra loro e disposti secondo uno schema preciso, che dipende dal tipo di formulazione. Ogni schema definisce un set di direzioni predefinite con cui ogni nodo comunica con quelli adiacenti.
+Il riscontro fisico di tali direzioni si ritrova nelle velocit\`a molecolari $c$ ed \`e, a seconda della scelta del loro numero, vincolato a precise leggi di simmetria indispensabili per ricavare ad esempio le equazioni di flusso.
+Questi modelli vengono anche definiti \textbf{DnQm}, con n dimensioni e m velocit\`a. Due dei modelli pi\`u utilizzati solo il \textbf{D2Q9} e il \textbf{D3Q27} spiegati man mano nella trattazione dell'articolo. In particolare in uno spazio a 2 dimensioni vari studi numerici hanno dimostrato che il reticolo quadrato a 9 velocit\`a, oltre a rispettare le leggi di simmetria, fornisce risultati pi\`u accurati di quelli basati sull' esagonale; inoltre \`e pi\`u semplice implementare differenti condizioni al contorno. In \textbf{\figurename~\ref{fig:D2}} \'e riportato un esempio a due dimensioni (D2) senza specifica delle velocit\'a.
+
+\vspace{1,5cm}
+\begin{figure}[!htb]
+	\centering
+	\begin{tikzpicture}[darkstyle,scale=1]
+		\draw[line width=0.2mm, black, fill=cyan!20, dotted] (0,0)--(2,0)--(2,2)--(0,2)--(0,0);
+		\foreach \x in {0,...,3}
+		\foreach \y in {0,...,3} 
+		{
+			\node [darkstyle]  (\x, \y) at (\x, \y)
+			{ };
+		} 
+	\end{tikzpicture}
+	\caption{Esempio modello a due dimensioni \label{fig:D2}}
+\end{figure}
+
+I modelli lattice Boltzmann possono operare su diversi tipi di reticoli, sia cubici che triangolari, con o senza particelle rimanenti nella funzione di distribuzione discreta.
+\begin{figure}[!htb]
+	\centering
+	\begin{tikzpicture}[darkstyle,scale=1.5]
+	\draw[line width=0.2mm, black, fill=cyan!20, dotted] (0,0)--(2,0)--(2,2)--(0,2)--(0,0);
+	\foreach \x in {0,...,3}
+	\foreach \y in {0,...,3} 
+	{
+		\node [darkstyle]  (\x, \y) at (\x, \y)
+		{ };
+	} 
+	% n/s
+	\draw [serpent, ->] (1, 1)--(1, 2);
+	\draw [serpent, ->] (1, 1)--(1, 0);
+	% e/w
+	\draw [serpent, ->] (1, 1)--(2, 1);
+	\draw [serpent, ->] (1, 1)--(0, 1);
+	% ne/sw
+	\draw [serpent, ->] (1, 1)--(2, 2);
+	\draw [serpent, ->] (1, 1)--(0, 0);
+	% nw/se
+	\draw [serpent, ->] (1, 1)--(0, 2);
+	\draw [serpent, ->] (1, 1)--(2, 0);
+	\end{tikzpicture}
+	\caption{Cella LBM di un modello D2Q9 \label{fig:D2Q9}}
+\end{figure}
+
+Decidendo quindi di associare al nostro modello di esempio a 2 dimensioni mostrato in \figurename~\ref{fig:D2}, nove diversi gradi di libert\`a o direzioni (anche chiamate velocit\`a) si avr\`a quindi un modello \textit{D2Q9} in cui ogni particella possiede nove velocit\`a diverse (8 velocit\`a reticolari pi\`u la velocit\`a nulla) come mostrato in \textbf{\figurename~\ref{fig:D2Q9}}.
+Esprimendo quindi la discretizzazione come $c={{\Delta x}\over{\Delta t}}$ \`e possibile scrivere le velocit\`a reticolari del modello \textit{D2Q9} come:
+\vspace{1 cm}
+\begin{center}
+	$c_0=c(0,0)$ \\
+	$c_1,_3=c(\pm1,0)$\\
+	$c_2,_4=c(0,\pm1)$\\ 
+	$c_5,_7=c(\pm1,\pm1)$\\ 
+	$c_6,_8=c(\mp1,\pm1)$\\
+\end{center} 
+\vspace{1 cm}
+Le velocit\`a descritte qui sono riportare in \textbf{\figurename~\ref{fig:velocit}}.
+
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=1 \linewidth]{figure/velocit}
+	\end{center}
+	\caption{zoom sulle veocit\`a di un reticolo D2Q9 \label{fig:velocit}}
+\end{figure}
+\subsection{Stream and collision}
+La principale caratteristica dell'algoritmo LBM, oltre alla locale conservazione della massa e del momento, \`e l'alternanza delle fasi di \textbf{streaming} e \textbf{collision} ovvero processi di propagazione e di collisione all'interno della griglia reticolare discreta (\textit{Lattice}). Queste fasi sono descritte anch'esse nell'equazione cinetica di Boltzmann.\\
+In un primo momento le particelle si propagano tra le varie celle seguendo la propria direzione reticolare e in un secondo, dopo un intervallo di tempo, ogni particella si sposter\`a sul nodo vicino, a seconda della propria direzione. Qualora sullo stesso nodo arrivassero particelle da pi\`u direzioni e con velocit\`a diverse, queste colliderebbero e cambierebbero le loro direzioni in base ad un insieme di regole di collisione. Regole di collisione appropriate dovrebbero conservare il numero di particelle, il momento e l'energia prima e dopo la collisione.
+Nel capitolo successivo verranno descritti gli strumenti utilizzati per la realizzazione per passare poi alle tecnologie e alle metodologie utilizzate con relativi esempi di impiego e motivazioni.

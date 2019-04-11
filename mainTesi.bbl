@@ -1,0 +1,52 @@
+\begin{thebibliography}{Fow02}
+
+\bibitem[Ale07]{GP:01}
+Andrei Alexandrescu.
+\newblock {\em Modern C++ Design: Generic Programming and Design Patterns
+  Applied}.
+\newblock Addison-Wesley, 2007.
+
+\bibitem[Ber17]{sb:2017}
+S.~Berrino.
+\newblock {\em Il modello numerico Lattice "Boltzmann" per le equazioni Shallow
+  Water.}
+\newblock PhD thesis, Universit\`a degli studi di Roma Tre, 2017.
+
+\bibitem[Fow02]{UML:10}
+Martin Fowler.
+\newblock {\em UML distilled. Guida rapida al linguaggio di modellazione
+  standard}.
+\newblock Pearson; 4 edizione, 2002.
+
+\bibitem[KB01]{agile2001}
+Robert C. Martin e Martin~Fowler Kent~Beck.
+\newblock Manifesto for agile software development.
+\newblock 2001.
+
+\bibitem[KM13]{CMAKE:03}
+Bill~Hoffmann Ken~Martin.
+\newblock {\em Intel Threading Building Blocks}.
+\newblock Kitware, 2013.
+
+\bibitem[Mar02]{AG:02}
+Rober~C. Martin.
+\newblock {\em Agile Software Development: Principles, Patterns, and
+  Practices}.
+\newblock Pearson; 1st edition, 2002.
+
+\bibitem[rei07]{TBB:07}
+James reinders.
+\newblock {\em Intel Threading Building Blocks}.
+\newblock O'Reilly Media, 2007.
+
+\bibitem[Sta14]{SO:14}
+William Stallings.
+\newblock {\em Operating Systems: Internals and Design Principles}.
+\newblock Pearson College Div; 8 edizione, 2014.
+
+\bibitem[Str00]{C:2000}
+Bjarne Stroustrup.
+\newblock {\em C++ Linguaggio, libreria standard, principi di programmazione}.
+\newblock Pearson Addison-Wesley, 2000.
+
+\end{thebibliography}

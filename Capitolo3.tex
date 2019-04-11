@@ -1,0 +1,47 @@
+In questo capitolo, dopo aver preso nota delle tecnologie e metodologie utilizzate e descritte nel \textit{Capitolo 2} ,si vedr\`a pi\`u in dettaglio lo studio dei requisiti e dei problemi risolti nel lavoro svolto,prima di passare alla descrizione della progettazione dell'applicativo.
+
+\section{Obiettivi formativi}
+Gli obiettivi formativi inizialmente pensati per essere realizzati durante lo svolgimento del tirocinio,erano quelli di poter realizzare una libreria in grado di poter utilizzare due tipi di algoritmi: algoritmo con fase di streaming e fase di collisione e un algoritmo in cui si sarebbe eliminata la fase di streaming e di vedere le differenze a livello di tempo di esecuzione tra i due. Date le tempistiche ridotte del tirocinio questa idea \`e stata per\`o abbandonata per dare maggior attenzione allo studio delle tecniche per aumentare le prestazioni computazionali arrivando a due obiettivi da raggiungere: lo sviluppo di un software veloce che potesse essere di facile impiego per l'utente utilizzatore, il tutto completato dall'implementazione di classi automatizzate di test che accompagnano lo sviluppo. L’attivit\`a di definizione dei requisiti a breve termine \`e stata, pi\'u che un punto di partenza,una fase ricorrente del lavoro alternata allo sviluppo vero e proprio della libreria. Il paragrafo che segue raccoglie tutti i requisiti che sono stati individuati e le problematiche da risolvere prese in considerazione durante il lavoro.
+
+\section{Analisi dei requisiti e scelte progettuali}
+
+Gran parte dello studio rivolto all'analisi dei requisiti \`e stato svolto, come si addice ad un software sviluppato con \textbf{metodologia agile}, nelle prime iterazioni e riguarda tutte quelle esigenze descritte nel \textit{Capitolo 1} e che poi hanno trovato un buon riscontro nelle tecnologie analizzate nel \textit{Capitolo 2}. Di seguito in \textbf{\figurename~\ref{fig:primaiterazione}}
+\`e descritto in maniera semplificata il diagramma degli oggetti di dominio, risultato dall' analisi del progetto nella prima iterazione.
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=1 \linewidth]{figure/primaIterazione}
+	\end{center}
+	\caption{diagramma degli oggetti ideato nella prima iterazione \label{fig:primaiterazione}}
+\end{figure}\hfill
+
+Come si nota la classe templetizzata descritta nel \textit{paragrafo 2.3} \`e stata fin da subito pensata come l'oggetto base da cui partire e su cui basare le iterazioni. Un altro fattore su cui si \`e scelto di lavorare per facilitare l'utilizzo come si conviene ad una buona libreria. Per rendere la suddetta accessibile e utilizzabile in pieno si \`e scelto di dare poche funzionalit\`a all'utente mostrando dunque solo le operazioni di interesse lasciando a lui la possibilit\`a di inserire alcune condizioni di utilizzo che saranno mostrate nel capitolo successivo.I problemi che sono stati affrontati con maggior interesse riguardano due importanti fattori: la facilit\`a di impiego e la velocit\`a computazionale.
+
+Per quanto riguarda la velocit\`a computazionale la soluzione ottima o comunque quella che si \`e visto essere la migliore \`e stata l'introduzione della programmazione parallela e concorrente e la templetizzazione delle classi.
+La programmazione generica in C++ infatti, nella creazione degli oggetti, d\`a un grande aiuto non solo per quanto riguarda la flessibilit\`a del progetto ma anche alla velocit\`a computazionale, in quanto i template vengono elaborati e creati a tempo di compilazione lasciando quindi meno lavoro da svolgere a tempo di esecuzione dell'applicativo.
+Per poter essere di sostegno a qualunque tipologia di progetto e impiego si \`e preferito lasciare all'utente la possibilit\`a di inserire le condizioni di bordo che egli ritiene pi\`u utili per il proprio scopo. Per \textbf{condizioni di bordo} si intendono le condizioni che rispondono alla domanda di come si comporta una particella con una certa velocit\`a quando "incontra" il bordo fittizio del reticolo scelto.
+
+Durante una successiva analisi si \`e poi optato per alcune modifiche progettuali che sono mostrate nel diagramma ad oggetti di seguito in \figurename~\ref{fig:secondaiterazione} seguendo i principi espressi dal libro "UML distilled. Guida rapida al linguaggio di modellazione standard"\cite{UML:10} ed utilizzando \textbf{draw.io}, software di diagrammi online gratuito per la creazione di diagrammi di flusso, diagrammi di processo, organigrammi, ER e diagrammi di rete.
+\newpage
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[width=1 \linewidth]{figure/secondaIterazione}
+	\end{center}
+	\caption{diagramma degli oggetti ideato nella seconda iterazione \label{fig:secondaiterazione}}
+\end{figure}
+Nell'ingegneria del software, UML, acronimo di unified modeling language ovvero di "linguaggio di modellizzazione unificato" \`e un linguaggio di modellazione e specifica basato sul paradigma orientato agli oggetti. Il nucleo del linguaggio fu definito nel 1996 da Grady Booch, Jim Rumbaugh e Ivar Jacobson. Lo stantard \`e tuttora gestito dall'Object Management Group. UML svolge un'importantissima funzione di "lingua franca" nella comunit\`a della progettazione e programmazione ad oggetti utilizzato anche dalla gran parte della letteratura del settore informatico per descrivere soluzioni analitiche e progettuali in modo sintetico e comprensibile ad un vasto pubblico.
+
+Tutto ci\`o che \'e stato descritto fino ad ora in questo capitolo rientra in tutta quella branca dell'informatica definita ingegneria del software che divide la creazione del progetto in tre parti distinte ma sviluppate quasi in parallelo: analisi, progettazione ed implementazione. La progettazione \`e infatti una fase del ciclo di vita del software. Sulla base della specifica dei requisiti prodotta dall'analisi, la progettazione ne definir\`a i modi in cui tali requisiti saranno soddisfatti, entrando nel merito della struttura che dovr\`a essere data al sistema software che deve essere implementato. In particolare durante il lavoro svolto \`e stata utilizzata una metodologia definita come \textbf{Agile}.
+
+
+Nell'ingegneria del software, l'espressione "metodologia agile", o sviluppo agile del software, si riferisce a un insieme di metodi di sviluppo del software emersi a partire dai primi anni 2000. Di grande spunto \`e stato anche il libro "Agile Software Development: Principles, Patterns, and Practices"\cite{AG:02} I metodi agili si contrappongono al modello a cascata e altri processi software tradizionali, proponendo un approccio meno strutturato e focalizzato sull'obiettivo di consegnare al cliente, in tempi brevi e frequentemente, software funzionante e di qualit\`a.
+Questi principi sono definiti nel "Manifesto per lo sviluppo agile del software"~\cite{agile2001},
+pubblicato nel 2001 da Kent Beck, Robert C. Martin e Martin Fowler in cui si specificano le seguenti considerazioni:\\
+\begin{center}
+	\textbf{Gli individui e le interazioni} p\`u che i processi e gli strumenti\\
+	\textbf{Il software funzionante} pi\`u che la documentazione esaustiva\\
+	\textbf{La collaborazione col cliente} pi\`u che la negoziazione dei contratti\\
+	\textbf{Rispondere al cambiamento} pi\`u che seguire un piano\\
+\end{center}
+
+Fra le pratiche promosse dai metodi agili si trovano: la formazione di team di sviluppo piccoli, poli-funzionali e auto-organizzati, lo sviluppo iterativo e incrementale, la pianificazione adattiva, e il coinvolgimento diretto e continuo del cliente nel processo di sviluppo. 
+Si passa ora ad analizzare la libreria con particolare interesse all' inizializzazione e alla fase di spostamento delle particelle (detto \textit{Stream}).
